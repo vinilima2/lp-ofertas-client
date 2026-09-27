@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LP Ofertas</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons (clean and modern icons) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1><i class="ph ph-shopping-cart"></i> <strong>LP</strong> Ofertas</h1>
+            <div class="search-controls header-search">
+                <div class="input-group">
+                    <i class="ph ph-magnifying-glass"></i>
+                    <input type="text" id="searchInput" placeholder="O que você procura?">
+                </div>
+                <div class="select-group">
+                    <i class="ph ph-storefront"></i>
+                    <select id="marketSelect">
+                        <option value="">Todos</option>
+                        <option value="avenida">Avenida</option>
+                        <option value="gigantao">Gigantão</option>
+                        <option value="jau_serve">Jaú Serve</option>
+                        <option value="panelao">Panelão</option>
+                    </select>
+                </div>
+                <button id="searchBtn" class="btn primary search-btn-header"><i class="ph ph-magnifying-glass"></i> Buscar</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Seção de Resultados da Pesquisa -->
+        <section class="search-section card fade-in" id="searchResultsSection" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 style="margin-bottom: 0;">Resultados da Busca</h2>
+                <button id="closeSearchBtn" class="btn" style="padding: 0.25rem 0.5rem; font-size: 1.25rem; background: transparent; color: var(--text-muted);"><i class="ph ph-x"></i></button>
+            </div>
+            <div class="results-container" id="resultsContainer">
+                <p class="empty-state">Faça uma busca para ver as ofertas.</p>
+            </div>
+        </section>
+
+        <!-- Seção Lista de Compras -->
+        <section class="list-section card slide-up">
+            <div class="list-header">
+                <h2><i class="ph ph-list-checks"></i> Minha Lista</h2>
+            </div>
+
+            <div class="search-controls" style="margin-bottom: 1rem;">
+                <div class="input-group">
+                    <i class="ph ph-pencil-simple"></i>
+                    <input type="text" id="manualListInput" placeholder="Ex: Arroz 5kg">
+                </div>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <button id="addManualBtn" class="btn primary"><i class="ph ph-plus"></i> Adicionar</button>
+                    <button id="clearListBtn" class="btn danger"><i class="ph ph-trash"></i> Limpar</button>
+                </div>
+            </div>
+            
+            <div class="shopping-list-container" id="shoppingListContainer">
+                <p class="empty-state">Sua lista está vazia.</p>
+            </div>
+
+            <div class="cheapest-market-container" id="cheapestMarketContainer">
+                <!-- Mostra em qual mercado a lista sai mais barata -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="app.js"></script>
+</body>
+</html>
