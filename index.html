@@ -14,6 +14,9 @@
     <header>
         <div class="header-content">
             <h1><i class="ph ph-shopping-cart"></i> <strong>LP</strong> Ofertas</h1>
+            <button id="folhetosToggleBtn" class="btn folhetos-header-btn">
+                <i class="ph ph-newspaper"></i> Ver Folhetos
+            </button>
             <div class="search-controls header-search">
                 <div class="input-group">
                     <i class="ph ph-magnifying-glass"></i>
@@ -46,7 +49,22 @@
             </div>
         </section>
 
+        <!-- Seção de Folhetos -->
+        <section class="folhetos-section card fade-in" id="folhetosSection" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 style="margin-bottom: 0;"><i class="ph ph-newspaper"></i> Folhetos de Ofertas</h2>
+                <button id="closeFolhetosBtn" class="btn" style="padding: 0.25rem 0.5rem; font-size: 1.25rem; background: transparent; color: var(--text-muted);"><i class="ph ph-x"></i></button>
+            </div>
+            <div class="folhetos-filter" id="folhetosFilter">
+                <!-- Filtros de supermercado para folhetos -->
+            </div>
+            <div class="folhetos-container" id="folhetosContainer">
+                <p class="empty-state"><i class="ph ph-spinner ph-spin"></i> Carregando folhetos...</p>
+            </div>
+        </section>
+
         <!-- Seção Lista de Compras -->
+
         <section class="list-section card slide-up">
             <div class="list-header">
                 <h2><i class="ph ph-list-checks"></i> Minha Lista</h2>

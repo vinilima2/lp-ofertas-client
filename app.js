@@ -27,6 +27,14 @@ const clearListBtn = document.getElementById('clearListBtn');
 const manualListInput = document.getElementById('manualListInput');
 const addManualBtn = document.getElementById('addManualBtn');
 
+// Folhetos
+const folhetosToggleBtn = document.getElementById('folhetosToggleBtn');
+const folhetosSection = document.getElementById('folhetosSection');
+const closeFolhetosBtn = document.getElementById('closeFolhetosBtn');
+const folhetosContainer = document.getElementById('folhetosContainer');
+const folhetosFilter = document.getElementById('folhetosFilter');
+
+
 // ==========================================
 // EVENT LISTENERS
 // ==========================================
@@ -45,6 +53,25 @@ addManualBtn.addEventListener('click', handleManualAdd);
 manualListInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') handleManualAdd();
 });
+
+// Folhetos toggle
+folhetosToggleBtn.addEventListener('click', () => {
+    const isVisible = folhetosSection.style.display !== 'none';
+    if (isVisible) {
+        folhetosSection.style.display = 'none';
+        folhetosToggleBtn.innerHTML = '<i class="ph ph-newspaper"></i> Ver Folhetos';
+    } else {
+        folhetosSection.style.display = 'block';
+        folhetosToggleBtn.innerHTML = '<i class="ph ph-eye-slash"></i> Ocultar Folhetos';
+        loadFolhetos();
+    }
+});
+
+closeFolhetosBtn.addEventListener('click', () => {
+    folhetosSection.style.display = 'none';
+    folhetosToggleBtn.innerHTML = '<i class="ph ph-newspaper"></i> Ver Folhetos';
+});
+
 
 // Inicializa a lista de compras na tela
 renderShoppingList();
@@ -344,7 +371,149 @@ function formatMarketName(name) {
     return names[name.toLowerCase()] || name;
 }
 
+// ==========================================
+// FOLHETOS
+// ==========================================
+
+let allFolhetos = [];
+let activeFolhetoMarket = '';
+
+async function loadFolhetos() {
+    folhetosContainer.innerHTML = '<p class="empty-state"><i class="ph ph-spinner ph-spin"></i> Carregando folhetos...</p>';
+    folhetosFilter.innerHTML = '';
+
+    try {
+        let data = [];
+
+        if (!supabaseClient) {
+            // Dados mock para demonstração
+            data = mockFolhetos();
+        } else {
+            const today = new Date().toISOString().split('T')[0];
+            const { data: rows, error } = await supabaseClient
+                .from('folhetos')
+                .select('*')
+                .or(`data_expiracao.gte.${today},data_expiracao.is.null`)
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+            data = rows || [];
+        }
+
+        allFolhetos = data;
+        renderFolhetosFilter();
+        renderFolhetos(allFolhetos);
+
+    } catch (error) {
+        console.error('Erro ao carregar folhetos:', error);
+        folhetosContainer.innerHTML = '<p class="empty-state" style="color: var(--danger-color);">Erro ao carregar folhetos. Tente novamente.</p>';
+    }
+}
+
+function renderFolhetosFilter() {
+    const markets = [...new Set(allFolhetos.map(f => f.supermercado).filter(Boolean))];
+
+    if (markets.length === 0) {
+        folhetosFilter.innerHTML = '';
+        return;
+    }
+
+    const allBtn = document.createElement('button');
+    allBtn.className = 'folheto-filter-btn active';
+    allBtn.textContent = 'Todos';
+    allBtn.addEventListener('click', () => {
+        activeFolhetoMarket = '';
+        document.querySelectorAll('.folheto-filter-btn').forEach(b => b.classList.remove('active'));
+        allBtn.classList.add('active');
+        renderFolhetos(allFolhetos);
+    });
+    folhetosFilter.appendChild(allBtn);
+
+    markets.forEach(market => {
+        const btn = document.createElement('button');
+        btn.className = 'folheto-filter-btn';
+        btn.textContent = formatMarketName(market);
+        btn.addEventListener('click', () => {
+            activeFolhetoMarket = market;
+            document.querySelectorAll('.folheto-filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderFolhetos(allFolhetos.filter(f => f.supermercado === market));
+        });
+        folhetosFilter.appendChild(btn);
+    });
+}
+
+function renderFolhetos(folhetos) {
+    if (!folhetos || folhetos.length === 0) {
+        folhetosContainer.innerHTML = '<p class="empty-state">Nenhum folheto disponível no momento.</p>';
+        return;
+    }
+
+    folhetosContainer.innerHTML = '';
+    folhetos.forEach(folheto => {
+        const isExpired = folheto.data_expiracao && new Date(folheto.data_expiracao) < new Date();
+        const expiracaoFormatada = folheto.data_expiracao
+            ? new Date(folheto.data_expiracao + 'T00:00:00').toLocaleDateString('pt-BR')
+            : null;
+
+        const card = document.createElement('div');
+        card.className = 'folheto-card fade-in';
+
+        card.innerHTML = `
+            <div class="folheto-header">
+                <div class="folheto-market">
+                    <i class="ph ph-storefront"></i>
+                    <span>${formatMarketName(folheto.supermercado) || 'Supermercado'}</span>
+                </div>
+                ${expiracaoFormatada ? `
+                    <span class="folheto-expiracao ${isExpired ? 'expirado' : ''}">
+                        <i class="ph ph-calendar"></i>
+                        ${isExpired ? 'Expirou em' : 'Válido até'} ${expiracaoFormatada}
+                    </span>
+                ` : ''}
+            </div>
+            <div class="folheto-conteudo">
+                ${folheto.conteudo ? folheto.conteudo.replace(/\n/g, '<br>') : '<em style="color: var(--text-muted);">Sem conteúdo disponível.</em>'}
+            </div>
+        `;
+
+        folhetosContainer.appendChild(card);
+    });
+}
+
+function mockFolhetos() {
+    const hoje = new Date();
+    const proxSemana = new Date(hoje);
+    proxSemana.setDate(hoje.getDate() + 7);
+    const fmt = (d) => d.toISOString().split('T')[0];
+
+    return [
+        {
+            id: 'mock-1',
+            supermercado: 'avenida',
+            conteudo: '🛒 OFERTAS DA SEMANA - AVENIDA\n\nArroz Tio João 5kg - R$ 22,90\nFeijão Carioca 1kg - R$ 8,90\nLeite Integral 1L - R$ 4,50\nÓleo de Soja 900ml - R$ 6,99\nFarinha de Trigo 1kg - R$ 4,19',
+            created_at: hoje.toISOString(),
+            data_expiracao: fmt(proxSemana)
+        },
+        {
+            id: 'mock-2',
+            supermercado: 'gigantao',
+            conteudo: '🔥 GIGANTÃO - SUPER OFERTAS\n\nArroz Prato Fino 5kg - R$ 21,50\nLeite Jussara 1L - R$ 4,30\nMacarrão Adria 500g - R$ 3,49\nMolho de Tomate 340g - R$ 2,79\nFrango Inteiro (kg) - R$ 9,99',
+            created_at: hoje.toISOString(),
+            data_expiracao: fmt(proxSemana)
+        },
+        {
+            id: 'mock-3',
+            supermercado: 'jau_serve',
+            conteudo: '⭐ JAÚ SERVE - APROVEITE!\n\nFeijão Preto 1kg - R$ 7,99\nAçúcar Cristal 5kg - R$ 18,90\nCafé Pilão 500g - R$ 14,99\nManteiga Aviação 200g - R$ 7,29',
+            created_at: hoje.toISOString(),
+            data_expiracao: fmt(proxSemana)
+        }
+    ];
+}
+
 // Dados mockados para quando o supabase não estiver configurado
+
 function mockSearch(query, market) {
     const mockDB = [
         { id: 1, produto: 'Arroz Tio João 5kg', supermercado: 'avenida', preco: 22.90, unidade_medida: 'pct', detalhes: 'Leve 2 pague 1', data_expiracao: '30/09' },

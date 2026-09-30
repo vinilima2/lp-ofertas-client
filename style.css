@@ -305,3 +305,109 @@ input:focus, select:focus {
     font-size: 1.5rem;
     color: #10B981;
 }
+
+/* ==========================================
+   FOLHETOS
+   ========================================== */
+
+.folhetos-header-btn {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+    align-self: center;
+    transition: background-color 0.2s;
+}
+
+.folhetos-header-btn:hover {
+    background-color: rgba(255, 255, 255, 0.35);
+}
+
+.folhetos-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.folheto-filter-btn {
+    padding: 0.35rem 0.85rem;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    background: var(--bg-color);
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.folheto-filter-btn.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.folheto-filter-btn:hover:not(.active) {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.folheto-card {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 1rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.folheto-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+}
+
+.folheto-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(135deg, var(--primary-color), #8B5CF6);
+    color: white;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.folheto-market {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.folheto-expiracao {
+    font-size: 0.75rem;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.folheto-expiracao.expirado {
+    background: rgba(239, 68, 68, 0.3);
+    text-decoration: line-through;
+    opacity: 0.8;
+}
+
+.folheto-conteudo {
+    padding: 1rem;
+    font-size: 0.9rem;
+    line-height: 1.8;
+    color: var(--text-main);
+    background: white;
+    white-space: pre-wrap;
+}
+
