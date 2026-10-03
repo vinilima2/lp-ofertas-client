@@ -473,7 +473,8 @@ function renderFolhetos(folhetos) {
                 ` : ''}
             </div>
             <div class="folheto-conteudo">
-                ${folheto.conteudo ? folheto.conteudo.replace(/\n/g, '<br>') : '<em style="color: var(--text-muted);">Sem conteúdo disponível.</em>'}
+               <img src="data:image/png;base64, ${folheto.conteudo}" class="folheto-imagem"/>
+                ${!folheto.conteudo ?  '<em style="color: var(--text-muted);">Sem conteúdo disponível.</em>' : ''}
             </div>
         `;
 

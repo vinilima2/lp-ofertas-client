@@ -357,7 +357,6 @@ input:focus, select:focus {
 .folheto-card {
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
-    overflow: hidden;
     margin-bottom: 1rem;
     transition: transform 0.2s, box-shadow 0.2s;
 }
@@ -411,3 +410,12 @@ input:focus, select:focus {
     white-space: pre-wrap;
 }
 
+
+.folhetos-container {
+    display: flex;
+    overflow-x: scroll;
+}
+
+.folheto-imagem {
+    width: max-content
+}
